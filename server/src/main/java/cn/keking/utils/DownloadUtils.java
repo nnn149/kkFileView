@@ -19,9 +19,11 @@ import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
@@ -105,10 +107,22 @@ public class DownloadUtils {
                         }
                     };
                     try {
-                        restTemplate.execute(url.toURI(), HttpMethod.GET, requestCallback, fileResponse -> {
-                            FileUtils.copyToFile(fileResponse.getBody(), realFile);
-                            return null;
-                        });
+                        if (urlStr.startsWith("file:")) {
+                            // file:// 协议，直接读取本地文件
+                            File localFile = Paths.get(url.toURI()).toFile();
+                            if (!localFile.exists()) {
+                                throw new RuntimeException("本地文件不存在: " + localFile.getAbsolutePath());
+                            }
+                            try (FileInputStream fis = new FileInputStream(localFile)) {
+                                FileUtils.copyToFile(fis, realFile);
+                            }
+                        } else {
+                            // http/https 走 RestTemplate
+                            restTemplate.execute(url.toURI(), HttpMethod.GET, requestCallback, fileResponse -> {
+                                FileUtils.copyToFile(fileResponse.getBody(), realFile);
+                                return null;
+                            });
+                        }
                     }  catch (Exception e) {
                             response.setCode(1);
                             response.setContent(null);
