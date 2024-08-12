@@ -13,27 +13,27 @@ public class IndexController {
 
     @GetMapping( "/index")
     public String go2Index(){
-        return "/main/index";
+        return "/404";
     }
 
     @GetMapping( "/record")
     public String go2Record(){
-        return "/main/record";
+        return "/404";
     }
 
     @GetMapping( "/sponsor")
     public String go2Sponsor(){
-        return "/main/sponsor";
+        return "/404";
     }
 
     @GetMapping( "/integrated")
     public String go2Integrated(){
-        return "/main/integrated";
+        return "/404";
     }
 
     @GetMapping( "/")
     public String root() {
-        return "/main/index";
+        return "/404";
     }
 
 
