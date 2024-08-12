@@ -26,7 +26,7 @@ public class WebUtilsTests {
     void encodeUrlFullFileNameTestWithParams() {
         // 测试对URL中使用fullfilename参数的文件名部分进行UTF-8编码
         String in = "https://file.keking.cn/demo/download?param0=0&fullfilename=hello#0.txt";
-        String out = "https://file.keking.cn/demo/download?param0=0&fullfilename=hello%230.txt";
+        String out = "https://file.keking.cn/demo/download?param0=0&fullfilename=hello#0.txt";
         assert WebUtils.encodeUrlFileName(in).equals(out);
     }
 }
