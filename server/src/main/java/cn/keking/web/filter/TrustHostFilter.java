@@ -2,21 +2,15 @@ package cn.keking.web.filter;
 
 import cn.keking.config.ConfigConstants;
 import cn.keking.utils.WebUtils;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-
+import jakarta.servlet.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author chenjh
@@ -54,6 +48,9 @@ public class TrustHostFilter implements Filter {
     }
 
     public boolean isNotTrustHost(String host) {
+        if (host.equals("")) {
+            return false;
+        }
         // 如果配置了黑名单，优先检查黑名单
         if (CollectionUtils.isNotEmpty(ConfigConstants.getNotTrustHostSet())) {
             return ConfigConstants.getNotTrustHostSet().contains(host);
