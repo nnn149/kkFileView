@@ -39,8 +39,7 @@
 			}
      .video{
 		width: 100%; 
-		height: 600px;
-		max-width: 900px;  
+		height: 100%;
 		margin: auto;
          position: absolute;
         top: 0;
