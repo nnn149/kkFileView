@@ -42,7 +42,7 @@ public class DownloadUtils {
     private static final String URL_PARAM_FTP_PASSWORD = "ftp.password";
     private static final String URL_PARAM_FTP_CONTROL_ENCODING = "ftp.control.encoding";
     private static final RestTemplate restTemplate = new RestTemplate();
-    private static  final HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+    private static final HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
     private static final ObjectMapper mapper = new ObjectMapper();
 
 
@@ -101,8 +101,8 @@ public class DownloadUtils {
                     RequestCallback requestCallback = request -> {
                         request.getHeaders().setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
                         String proxyAuthorization = fileAttribute.getKkProxyAuthorization();
-                        if(StringUtils.hasText(proxyAuthorization)){
-                            Map<String,String>  proxyAuthorizationMap = mapper.readValue(proxyAuthorization, Map.class);
+                        if (StringUtils.hasText(proxyAuthorization)) {
+                            Map<String, String> proxyAuthorizationMap = mapper.readValue(proxyAuthorization, Map.class);
                             proxyAuthorizationMap.forEach((key, value) -> request.getHeaders().set(key, value));
                         }
                     };
@@ -110,6 +110,9 @@ public class DownloadUtils {
                         if (urlStr.startsWith("file:")) {
                             // file:// 协议，直接读取本地文件
                             File localFile = Paths.get(url.toURI()).toFile();
+                            if (localFile.length() > 50 * 1024 * 1024) {
+                                throw new RuntimeException("文件过大:" + localFile.length() / 1024 / 1024 + "MB");
+                            }
                             if (!localFile.exists()) {
                                 throw new RuntimeException("本地文件不存在: " + localFile.getAbsolutePath());
                             }
@@ -123,11 +126,11 @@ public class DownloadUtils {
                                 return null;
                             });
                         }
-                    }  catch (Exception e) {
-                            response.setCode(1);
-                            response.setContent(null);
-                            response.setMsg("下载失败:" + e);
-                            return response;
+                    } catch (Exception e) {
+                        response.setCode(1);
+                        response.setContent(null);
+                        response.setMsg("下载失败:" + e);
+                        return response;
                     }
                 } else if (isFtpUrl(url)) {
                     String ftpUsername = WebUtils.getUrlParameterReg(fileAttribute.getUrl(), URL_PARAM_FTP_USERNAME);
